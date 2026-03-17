@@ -1,34 +1,29 @@
-# AI Resume Analyzer API
+# AI Resume Analyzer 🚀
 
-A backend project built with Python and Flask that analyzes resumes and evaluates their match against job descriptions.
+An AI-powered web application that analyzes resumes and compares them with job descriptions.
 
-## Features
+## 🔥 Features
+- Upload resume as PDF
+- Extract text automatically
+- Analyze resume using AI
+- Match resume with job descriptions
+- Provide strengths, weaknesses, and suggestions
 
-- Analyze resume text
-- Extract technical skills
-- Identify strengths and weaknesses
-- Generate improvement suggestions
-- Compare resumes with job descriptions
-- Return structured JSON responses through REST API endpoints
+## 🛠️ Tech Stack
+- Python (Flask)
+- OpenAI API
+- HTML, CSS, JavaScript
+- Render (Deployment)
 
-## Tech Stack
+## 🌐 Live Demo
+https://ai-resume-analyzer-offj.onrender.com
 
-- Python
-- Flask
-- JSON
-- REST API
-- Modular backend architecture
+## 📸 Screenshot
+(Add screenshot here)
 
-## API Endpoints
-
-### GET /
-Returns API status.
-
-### POST /analyze
-Analyzes a resume.
-
-Example request body:
-```json
-{
-  "resume_text": "Python developer with SQL and API experience"
-}
+## 📦 How to Run Locally
+```bash
+git clone https://github.com/Mahdi-Naddafpour/ai-resume-analyzer.git
+cd ai-resume-analyzer
+pip install -r requirements.txt
+python api.py
