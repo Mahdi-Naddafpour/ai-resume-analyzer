@@ -51,6 +51,11 @@
             font-size: 14px;
         }
 
+        input[type="file"] {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
         .buttons {
             margin-top: 20px;
             display: flex;
@@ -86,12 +91,23 @@
             color: #f87171;
             margin-top: 15px;
         }
+
+        .success {
+            color: #4ade80;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>AI Resume Analyzer</h1>
         <p>Analyze resumes and compare them with job descriptions</p>
+
+        <label for="resumeFile">Upload Resume PDF</label>
+        <input type="file" id="resumeFile" accept=".pdf">
+        <button onclick="uploadResume()">Upload PDF Resume</button>
+
+        <div id="success" class="success"></div>
 
         <label for="resume">Resume Text</label>
         <textarea id="resume" placeholder="Paste resume text here..."></textarea>
@@ -109,12 +125,56 @@
     </div>
 
     <script>
-        async function analyzeResume() {
-            const resumeText = document.getElementById("resume").value;
+        async function uploadResume() {
+            const fileInput = document.getElementById("resumeFile");
             const errorDiv = document.getElementById("error");
+            const successDiv = document.getElementById("success");
             const resultDiv = document.getElementById("result");
 
             errorDiv.textContent = "";
+            successDiv.textContent = "";
+            resultDiv.textContent = "Uploading and reading PDF...";
+
+            if (!fileInput.files.length) {
+                errorDiv.textContent = "Please select a PDF file.";
+                resultDiv.textContent = "";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("resume_file", fileInput.files[0]);
+
+            try {
+                const response = await fetch("/upload-resume", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    errorDiv.textContent = data.error || "Failed to upload PDF.";
+                    resultDiv.textContent = "";
+                    return;
+                }
+
+                document.getElementById("resume").value = data.resume_text;
+                successDiv.textContent = "PDF uploaded successfully. Resume text extracted.";
+                resultDiv.textContent = "Resume text loaded into the Resume Text box.";
+            } catch (error) {
+                errorDiv.textContent = "An error occurred while uploading the PDF.";
+                resultDiv.textContent = "";
+            }
+        }
+
+        async function analyzeResume() {
+            const resumeText = document.getElementById("resume").value;
+            const errorDiv = document.getElementById("error");
+            const successDiv = document.getElementById("success");
+            const resultDiv = document.getElementById("result");
+
+            errorDiv.textContent = "";
+            successDiv.textContent = "";
             resultDiv.textContent = "Loading...";
 
             const response = await fetch("/analyze", {
@@ -147,9 +207,11 @@
             const resumeText = document.getElementById("resume").value;
             const jobText = document.getElementById("job").value;
             const errorDiv = document.getElementById("error");
+            const successDiv = document.getElementById("success");
             const resultDiv = document.getElementById("result");
 
             errorDiv.textContent = "";
+            successDiv.textContent = "";
             resultDiv.textContent = "Loading...";
 
             const response = await fetch("/match", {

@@ -1,16 +1,13 @@
-import json
-import os
+from pypdf import PdfReader
 
 
-def read_text_file(file_path: str) -> str:
-    with open(file_path, "r", encoding="utf-8") as file:
-        return file.read().strip()
+def extract_text_from_pdf(pdf_file) -> str:
+    reader = PdfReader(pdf_file)
+    extracted_text = []
 
+    for page in reader.pages:
+        page_text = page.extract_text()
+        if page_text:
+            extracted_text.append(page_text)
 
-def file_exists(file_path: str) -> bool:
-    return os.path.isfile(file_path)
-
-
-def save_json_file(data: dict, file_path: str) -> None:
-    with open(file_path, "w", encoding="utf-8") as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
+    return "\n".join(extracted_text).strip()
