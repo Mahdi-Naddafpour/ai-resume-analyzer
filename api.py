@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from analyzer import analyze_resume, compare_resume_with_job
 
 app = Flask(__name__)
@@ -6,9 +6,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({
-        "message": "AI Resume Analyzer API is running"
-    })
+    return render_template("index.html")
 
 
 @app.route("/analyze", methods=["POST"])

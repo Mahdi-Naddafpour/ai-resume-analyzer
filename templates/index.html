@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.25);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 8px;
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #e2e8f0;
+            resize: vertical;
+            font-size: 14px;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .error {
+            color: #f87171;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Resume Analyzer</h1>
+        <p>Analyze resumes and compare them with job descriptions</p>
+
+        <label for="resume">Resume Text</label>
+        <textarea id="resume" placeholder="Paste resume text here..."></textarea>
+
+        <label for="job">Job Description</label>
+        <textarea id="job" placeholder="Paste job description here..."></textarea>
+
+        <div class="buttons">
+            <button onclick="analyzeResume()">Analyze Resume</button>
+            <button onclick="matchResume()">Match Resume</button>
+        </div>
+
+        <div id="error" class="error"></div>
+        <div id="result" class="result">Results will appear here...</div>
+    </div>
+
+    <script>
+        async function analyzeResume() {
+            const resumeText = document.getElementById("resume").value;
+            const errorDiv = document.getElementById("error");
+            const resultDiv = document.getElementById("result");
+
+            errorDiv.textContent = "";
+            resultDiv.textContent = "Loading...";
+
+            const response = await fetch("/analyze", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    resume_text: resumeText
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                errorDiv.textContent = data.error || "Something went wrong.";
+                resultDiv.textContent = "";
+                return;
+            }
+
+            resultDiv.textContent =
+                "Professional Summary:\n" + data.professional_summary + "\n\n" +
+                "Key Technical Skills:\n" + data.key_technical_skills.join(", ") + "\n\n" +
+                "Strengths:\n- " + data.strengths.join("\n- ") + "\n\n" +
+                "Weaknesses:\n- " + data.weaknesses.join("\n- ") + "\n\n" +
+                "Suggestions for Improvement:\n- " + data.suggestions_for_improvement.join("\n- ");
+        }
+
+        async function matchResume() {
+            const resumeText = document.getElementById("resume").value;
+            const jobText = document.getElementById("job").value;
+            const errorDiv = document.getElementById("error");
+            const resultDiv = document.getElementById("result");
+
+            errorDiv.textContent = "";
+            resultDiv.textContent = "Loading...";
+
+            const response = await fetch("/match", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    resume_text: resumeText,
+                    job_description: jobText
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                errorDiv.textContent = data.error || "Something went wrong.";
+                resultDiv.textContent = "";
+                return;
+            }
+
+            resultDiv.textContent =
+                "Match Score:\n" + data.match_score + "/100\n\n" +
+                "Matching Skills:\n" + data.matching_skills.join(", ") + "\n\n" +
+                "Missing Skills:\n" + data.missing_skills.join(", ") + "\n\n" +
+                "Final Evaluation:\n" + data.final_evaluation;
+        }
+    </script>
+</body>
+</html>
