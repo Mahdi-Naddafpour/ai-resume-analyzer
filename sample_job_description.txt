@@ -1,0 +1,9 @@
+We are looking for a Junior Python Backend Developer.
+
+Requirements:
+- Good knowledge of Python
+- Familiarity with SQL and relational databases
+- Understanding of REST APIs
+- Knowledge of Git and GitHub
+- Strong problem-solving skills
+- Familiarity with Flask or FastAPI is a plus

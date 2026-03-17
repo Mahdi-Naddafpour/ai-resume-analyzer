@@ -1,0 +1,6 @@
+Mahdi Naddafpour
+
+Python developer with experience in Python, SQL, MySQL, Git, and backend development.
+Built small projects involving database search, data processing, and command-line applications.
+Interested in backend development, APIs, and scalable systems.
+Strong problem-solving mindset and eager to learn modern software development tools.
